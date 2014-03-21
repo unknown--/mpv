@@ -98,6 +98,7 @@ typedef struct MPOpts {
     int untimed;
     char *stream_capture;
     char *stream_dump;
+    int audio_test;
     int loop_times;
     int shuffle;
     int ordered_chapters;

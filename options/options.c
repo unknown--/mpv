@@ -571,6 +571,7 @@ const m_option_t mp_opts[] = {
 
     OPT_STRING("stream-capture", stream_capture, M_OPT_FIXED),
     OPT_STRING("stream-dump", stream_dump, M_OPT_FIXED),
+    OPT_FLAG("audio-test", audio_test, M_OPT_FIXED | M_OPT_GLOBAL),
 
     OPT_CHOICE_OR_INT("loop", loop_times, M_OPT_GLOBAL, 2, 10000,
                       ({"no", -1}, {"1", -1},

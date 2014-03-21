@@ -422,6 +422,7 @@ int mp_get_cache_percent(struct MPContext *mpctx);
 bool mp_get_cache_idle(struct MPContext *mpctx);
 void update_window_title(struct MPContext *mpctx, bool force);
 void stream_dump(struct MPContext *mpctx);
+void mp_audio_test(struct MPContext *mpctx);
 
 // osd.c
 void print_status(struct MPContext *mpctx);

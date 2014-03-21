@@ -510,18 +510,23 @@ int mpv_main(int argc, char *argv[])
         MP_VERBOSE(mpctx, " '%s'", argv[i]);
     MP_VERBOSE(mpctx, "\n");
 
-    if (!mpctx->playlist->first && !opts->player_idle_mode) {
-        mp_print_version(mpctx->log, true);
-        MP_INFO(mpctx, "%s", mp_help_text);
-        exit_player(mpctx, EXIT_NONE);
-    }
-
 #if HAVE_PRIORITY
     set_priority();
 #endif
 
     if (mp_initialize(mpctx) < 0)
         exit_player(mpctx, EXIT_ERROR);
+
+    if (opts->audio_test) {
+        mp_audio_test(mpctx);
+        exit_player(mpctx, EXIT_NONE);
+    }
+
+    if (!mpctx->playlist->first && !opts->player_idle_mode) {
+        mp_print_version(mpctx->log, true);
+        MP_INFO(mpctx, "%s", mp_help_text);
+        exit_player(mpctx, EXIT_NONE);
+    }
 
     mp_play_files(mpctx);
 
