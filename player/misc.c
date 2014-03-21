@@ -231,33 +231,36 @@ void mp_audio_test(struct MPContext *mpctx)
         exit(1);
     }
 
+    int min = ao_get_space(ao);
+
     struct mp_audio *mpa = talloc_zero(NULL, struct mp_audio);
     ao_get_format(ao, mpa);
-    mpa->samples = mpa->rate * 10.0;
+    mpa->samples = min;
     mp_audio_realloc(mpa, mpa->samples);
     mp_audio_fill_silence(mpa, 0, mpa->samples);
 
     // play the buffer
+    int samples_to_play = opts->audio_test * 60 * mpa->rate;
     int samples = 0;
     double start = mp_time_sec();
-    struct mp_audio buf = *mpa;
-    while (buf.samples || ao_get_delay(ao) >= 0.05) {
+    while (samples_to_play > 0 || ao_get_delay(ao) >= 0.05) {
         int len = ao_get_space(ao);
-        len = MPMIN(len, buf.samples);
+        len = MPMIN(len, samples_to_play);
+        assert(len <= mpa->samples);
         bool full_buffers = true;
         if (len > 0) {
-            bool final = buf.samples == len;
-            int r = ao_play(ao, buf.planes, len, final ? AOPLAY_FINAL_CHUNK : 0);
+            bool final = samples_to_play == len;
+            int r = ao_play(ao, mpa->planes, len, final ? AOPLAY_FINAL_CHUNK : 0);
             if (r < 0) {
                 MP_FATAL(mpctx, "error writing audio\n");
                 exit(1);
             }
             assert(r <= len);
-            mp_audio_skip_samples(&buf, r);
+            samples_to_play -= r;
             samples += r;
             full_buffers = r == len;
         }
-        double buf_time = samples / (double)buf.rate;
+        double buf_time = samples / (double)mpa->rate;
         double ao_time = buf_time - ao_get_delay(ao);
         double r_time = mp_time_sec() - start;
         MP_INFO(mpctx, "%f %f %f\n", r_time, ao_time, buf_time);
