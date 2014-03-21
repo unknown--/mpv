@@ -260,7 +260,7 @@ void mp_audio_test(struct MPContext *mpctx)
         double buf_time = samples / (double)buf.rate;
         double ao_time = buf_time - ao_get_delay(ao);
         double r_time = mp_time_sec() - start;
-        MP_INFO(mpctx, "%f %f %f\n", ao_time, r_time, buf_time);
+        MP_INFO(mpctx, "%f %f %f\n", r_time, ao_time, buf_time);
         if (full_buffers)
             mp_sleep_us(ao_get_delay(ao) / 2 * 1000.0 * 1000.0);
     }
