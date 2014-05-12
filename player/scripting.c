@@ -35,10 +35,14 @@
 #include "libmpv/client.h"
 
 extern const struct mp_scripting mp_scripting_lua;
+extern const struct mp_scripting mp_scripting_dlopen;
 
 static const struct mp_scripting *scripting_backends[] = {
 #if HAVE_LUA
     &mp_scripting_lua,
+#endif
+#if HAVE_CPLUGINS
+    &mp_scripting_dlopen,
 #endif
     NULL
 };
@@ -177,3 +181,33 @@ void mp_load_scripts(struct MPContext *mpctx)
     }
     talloc_free(tmp);
 }
+
+#if HAVE_CPLUGINS
+
+#include <dlfcn.h>
+
+#define MPV_DLOPEN_FN "mpv_dlopen"
+typedef int (*mpv_dlopen)(mpv_handle *handle);
+
+static int load_dlopen(struct mpv_handle *client, const char *fname)
+{
+    int r = -1;
+    void *lib = dlopen(fname, RTLD_NOW | RTLD_LOCAL);
+    if (!lib)
+        goto error;
+    mpv_dlopen sym = (mpv_dlopen)dlsym(lib, MPV_DLOPEN_FN);
+    if (!sym)
+        goto error;
+    r = sym(client) ? -1 : 0;
+error:
+    if (lib)
+        dlclose(lib);
+    return r;
+}
+
+const struct mp_scripting mp_scripting_dlopen = {
+    .file_ext = "so",
+    .load = load_dlopen,
+};
+
+#endif

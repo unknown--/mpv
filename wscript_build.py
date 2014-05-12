@@ -426,13 +426,18 @@ def build(ctx):
             install_name = '/mpv.app/Contents/Resources/' + res_basename
             ctx.install_as(ctx.env.BINDIR + install_name, resource)
 
+    syms = False
+    if ctx.dependency_satisfied('cplugins'):
+        syms = True
+        ctx.load("syms")
     ctx(
         target       = "mpv",
         source       = ctx.filtered_sources(sources) + ["player/main_fn.c"],
         use          = ctx.dependencies_use(),
         includes     = [ctx.bldnode.abspath(), ctx.srcnode.abspath()] + \
                        ctx.dependencies_includes(),
-        features     = "c cprogram",
+        features     = "c cprogram" + (" syms" if syms else ""),
+        export_symbols_regex = 'mpv_.*', # for syms=True
         install_path = ctx.env.BINDIR,
         **cprog_kwargs
     )
