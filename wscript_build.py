@@ -354,6 +354,7 @@ def build(ctx):
         ( "video/out/vo_image.c" ),
         ( "video/out/vo_lavc.c",                 "encoding" ),
         ( "video/out/vo_null.c" ),
+        ( "video/out/vo_fb.c" ),
         ( "video/out/vo_opengl.c",               "gl" ),
         ( "video/out/vo_opengl_old.c",           "gl" ),
         ( "video/out/vo_sdl.c",                  "sdl2" ),
