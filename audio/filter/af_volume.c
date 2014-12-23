@@ -31,6 +31,7 @@
 #include "demux/demux.h"
 
 struct priv {
+    float vol;                  // User-specified non-linear volume
     float level;                // User-specified gain level for each channel
     float rgain;                // Replaygain level
     int rgain_track;            // Enable/disable track based replaygain
@@ -84,10 +85,15 @@ static int control(struct af_instance *af, int cmd, void *arg)
         return af_test_output(af, in);
     }
     case AF_CONTROL_SET_VOLUME:
-        s->level = *(float *)arg;
+        s->vol = *(float *)arg;
+        float v = s->vol;
+        if (v > 1.0)
+            v = (v - 1.0) / 10 + 1.0;
+        s->level = pow(s->vol, 3);
+        MP_WARN(af, "%f -> %f\n", v, s->level);
         return AF_OK;
     case AF_CONTROL_GET_VOLUME:
-        *(float *)arg = s->level;
+        *(float *)arg = s->vol;
         return AF_OK;
     }
     return AF_UNKNOWN;
