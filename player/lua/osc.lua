@@ -15,7 +15,7 @@ local user_opts = {
     scalefullscreen = 1,        -- scaling of the controller when fullscreen
     scaleforcedwindow = 2,      -- scaling when rendered on a forced window
     vidscale = true,            -- scale the controller with the video?
-    valign = 0.8,               -- vertical alignment, -1 (top) to 1 (bottom)
+    valign = -1,               -- vertical alignment, -1 (top) to 1 (bottom)
     halign = 0,                 -- horizontal alignment, -1 (left) to 1 (right)
     boxalpha = 80,              -- alpha of the background box,
                                 -- 0 (opaque) to 255 (fully transparent)
@@ -29,7 +29,7 @@ local user_opts = {
                                 -- internal track list management (and some
                                 -- functions that depend on it)
     layout = "box",
-    seekbarstyle = "slider",    -- slider (diamond marker) or bar (fill)
+    seekbarstyle = "bar",    -- slider (diamond marker) or bar (fill)
 }
 
 -- read options from config and command-line
@@ -878,7 +878,7 @@ layouts["slimbox"] = function ()
     local osc_geo = {
         w = 660,    -- width
         h = 70,     -- height
-        r = 10,     -- corner-radius
+        r = 2,     -- corner-radius
     }
 
     -- make sure the OSC actually fits into the video
@@ -953,21 +953,21 @@ layouts["slimbox"] = function ()
 
     lo = add_layout("tc_left")
     lo.geometry =
-        {x = posX - (inner_w/2) + osc_geo.r, y = posY + 1,
-        an = 7, w = tc_w, h = ele_h}
+        {x = posX - (inner_w/1.56) + osc_geo.r, y = posY + 1,
+        an = 1, w = tc_w, h = ele_h}
     lo.style = styles.timecodes
     lo.alpha[3] = user_opts.boxalpha
 
     lo = add_layout("tc_right")
     lo.geometry =
-        {x = posX + (inner_w/2) - osc_geo.r, y = posY + 1,
-        an = 9, w = tc_w, h = ele_h}
+        {x = posX + (inner_w/1.9) - osc_geo.r, y = posY + 1,
+        an = 1, w = tc_w, h = ele_h}
     lo.style = styles.timecodes
     lo.alpha[3] = user_opts.boxalpha
 
     -- Cache
 
-    lo = add_layout("cache")
+    lo = add_layout("title")
     lo.geometry =
         {x = posX, y = posY + 1,
         an = 8, w = tc_w, h = ele_h}
