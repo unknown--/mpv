@@ -953,7 +953,7 @@ layouts["slimbox"] = function ()
 
     lo = add_layout("tc_left")
     lo.geometry =
-        {x = posX - (inner_w/1.9) + osc_geo.r, y = posY + 1,
+        {x = posX - (inner_w/1.50) + osc_geo.r, y = posY + 1,
         an = 1, w = tc_w, h = ele_h}
     lo.style = styles.timecodes
     lo.alpha[3] = user_opts.boxalpha
